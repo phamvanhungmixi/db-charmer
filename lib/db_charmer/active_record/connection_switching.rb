@@ -12,7 +12,7 @@ module DbCharmer
         end
 
         # Check connection name
-        config = config[name]
+        config = config[name] || config['shards'][name]
         unless config
           if should_exist
             raise ArgumentError, "Invalid connection name (does not exist in database.yml): #{DbCharmer.env}/#{name}"
@@ -60,6 +60,7 @@ module DbCharmer
 
         # For plain AR connection adapters, just use them as-is
         return conn if conn.kind_of?(::ActiveRecord::ConnectionAdapters::AbstractAdapter)
+        return conn if conn.kind_of?(::ActiveRecord::Turntable::ConnectionProxy)
 
         # For connection names, use connection factory to create new connections
         if conn.kind_of?(Symbol) || conn.kind_of?(String)
