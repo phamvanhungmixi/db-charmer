@@ -60,7 +60,11 @@ module DbCharmer
 
         # For plain AR connection adapters, just use them as-is
         return conn if conn.kind_of?(::ActiveRecord::ConnectionAdapters::AbstractAdapter)
-        return conn if conn.kind_of?(::ActiveRecord::Turntable::ConnectionProxy)
+        begin
+          return conn if conn.kind_of?(::ActiveRecord::Turntable::ConnectionProxy)
+        rescue NameError
+          # not loaded. just ignore
+        end
 
         # For connection names, use connection factory to create new connections
         if conn.kind_of?(Symbol) || conn.kind_of?(String)
