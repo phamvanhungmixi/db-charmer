@@ -12,7 +12,14 @@ module DbCharmer
         end
 
         # Check connection name
-        config = config[name] || config['shards'][name]
+        if name =~ /\./   # "seq.user_sequence" => conf[seq][user_sequence]
+          name.split(/\./).each do |key|
+            config = config[key]
+          end
+        else
+          config = config[name] || config['shards'][name]
+        end
+
         unless config
           if should_exist
             raise ArgumentError, "Invalid connection name (does not exist in database.yml): #{DbCharmer.env}/#{name}"
