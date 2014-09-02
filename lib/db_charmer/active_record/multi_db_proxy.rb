@@ -56,7 +56,15 @@ module DbCharmer
         def on_slave(con = nil, proxy_target = nil, &block)
           con ||= db_charmer_random_slave
           raise ArgumentError, "No slaves found in the class and no slave connection given" unless con
-          on_db(con, proxy_target, &block)
+          begin
+            on_db(con, proxy_target, &block)
+          rescue StandardError => err
+            if err.message =~ /Can't connect to MySQL server/
+              on_master(proxy_target, &block)
+            else
+              raise err
+            end
+          end
         end
 
         def on_master(proxy_target = nil, &block)
