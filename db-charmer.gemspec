@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   # Dependencies
   s.add_dependency 'activesupport', '< 4.0.0'
   s.add_dependency 'activerecord', '< 4.0.0'
-
+  s.add_dependency 'log_connection_name', '>= 0.1.0'
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'yard'
   s.add_development_dependency 'actionpack'
