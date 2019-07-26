@@ -96,16 +96,6 @@ require 'db_charmer/active_record/connection_switching'
 ActiveRecord::Base.extend(DbCharmer::ActiveRecord::ConnectionSwitching)
 
 #---------------------------------------------------------------------------------------------------
-# Enable AR logging extensions
-if DbCharmer.rails3?
-  require 'db_charmer/rails3/abstract_adapter/connection_name'
-  require 'db_charmer/rails3/active_record/log_subscriber'
-  ActiveRecord::LogSubscriber.send(:include, DbCharmer::ActiveRecord::LogSubscriber)
-  ActiveRecord::ConnectionAdapters::AbstractAdapter.send(:include, DbCharmer::AbstractAdapter::ConnectionName)
-else
-  require 'db_charmer/rails2/abstract_adapter/log_formatting'
-  ActiveRecord::ConnectionAdapters::AbstractAdapter.send(:include, DbCharmer::AbstractAdapter::LogFormatting)
-end
 
 #---------------------------------------------------------------------------------------------------
 # Enable connection proxy in AR
@@ -168,16 +158,6 @@ association_proxy_class.class_eval do
       @reflection.klass.on_master(self, &block)
     end
   end
-end
-
-#---------------------------------------------------------------------------------------------------
-# Enable multi-db migrations
-require 'db_charmer/active_record/migration/multi_db_migrations'
-ActiveRecord::Migration.send(:include, DbCharmer::ActiveRecord::Migration::MultiDbMigrations)
-
-if DbCharmer.rails31?
-  require 'db_charmer/rails31/active_record/migration/command_recorder'
-  ActiveRecord::Migration::CommandRecorder.send(:include, DbCharmer::ActiveRecord::Migration::CommandRecorder)
 end
 
 #---------------------------------------------------------------------------------------------------
